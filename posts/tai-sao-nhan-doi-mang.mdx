@@ -1,0 +1,104 @@
+---
+title: Tại sao người ta lại nhân đôi phần tử mảng thay vì một số khác
+topic: Maths, Computer Architecture
+cover: /tai-sao-nhan-doi-mang/cover.png
+---
+
+Hãy tưởng tượng bạn có một mảng với 10 phần tử:
+
+```go
+a [10]int
+```
+
+Mảng `a` đã được nạp đầy dữ liệu và cần nạp thêm 10 phần tử nữa. Giả sử thay vì nhân đôi `capacity` của mảng lên gấp đôi, chúng ta cộng thêm 10 `capacity` thì sao?
+
+$$
+capacity_{new} = f(capacity_{old}) + 10 = 20
+$$
+- Với $f(capacity)=capacity+10$
+
+Như vậy `capacity` của mảng mới đã bằng 20, đủ điều kiện để chúng ta nạp thêm 10 phần tử nữa! Như vậy việc nhân đôi chỉ số mảng là không cần thiết đúng không?
+
+Về vấn đề này, chúng ta cần đào sâu hơn. Hãy giả sử bạn có một mảng với 10 phần tử như trên, thay vì thêm 10 phần tử mới thì bạn thêm 100 phần tử. Nếu vẫn cộng thêm 10 cho một lần mở rộng, chúng ta cần tới 10 lần mở rộng mới đủ chỗ để nhét thêm 100 phần tử nữa.
+
+Vậy nếu chúng ta nhân đôi nó lên thì sao?
+
+$$
+	capacity_{new} = f(capacity_{old}) \times 2 
+$$
+- Với $f(capacity)=capacity\times2$
+
+$$
+	\Rightarrow n = \log_{2}{(\frac{S}{capacity_{old}})} + 1
+$$
+
+Như vậy để có thể nhét thêm 100 phần tử nữa, chúng ta chỉ cần mở rộng thêm khoảng $\log_{2}{100}$ lần mở rộng khoảng xấp xỉ 4 lần. Rất nhanh đúng không? 
+
+Nhưng nếu mình nói với bạn rằng việc nhân đôi chỉ số mảng thật ra là một ý tưởng tồi thì sao?
+
+Để hiểu hơn về mệnh đề của mình, ta hãy cùng xem cách máy tính cấp phát bộ nhớ khi bạn tạo một mảng. **Để tạo một mảng có $n$ phần tử, máy tính phải tìm một vùng nhớ có đúng hoặc nhiều hơn $n$ phân vùng trống liền kề nhau trong bộ nhớ**
+
+Hay $partition_{adj}\geq indices_{need}$
+
+Đều này có nghĩa là để tạo một mảng gồm 4 phần tử, máy tính phải tìm một phần vùng nhớ với 4 ô nhớ liền kề nhau.
+
+Giả sử chúng ta có một mảng 1 phần tử và nó tiếp tục nhân đôi: $1\rightarrow2\rightarrow4\rightarrow8\rightarrow16$
+
+Khi mảng của bạn phình to lên 16 phần tử, máy tính phải vứt bỏ các mảng cũ để tìm một vùng nhớ mới và để lại các `vùng nhớ hoang`. Tổng diện tích của các vùng nhớ này là $$1+2+4+8=15$$
+Lắp vào công thức đã có:
+$$
+partition_{adj}(15)\leq indices_{need}(16)
+$$
+Như vậy máy tính không thể tái sử dụng 15 vùng đất đã bỏ vì tổng vùng nhớ của nó nhỏ hơn tổng vùng nhớ mà ta cần. Hệ điều đành buộc phải bỏ đi 15 vùng nhớ đó để tìm một vùng nhớ khác lớn hơn. Đây chính là hiện tượng **Memory Fragmentation** hay **Phân mảnh bộ nhớ**
+
+Chính vì lý do này, nhiều ngôn ngữ hiện đại hơn như `Java`, `Go`, `C++`,... Đã sử dụng một con số khác thay cho `k = 2`
+
+$$
+k =1.5
+$$
+
+Để hiểu rõ hơn tại sao người ta lại chọn con số này thay vì con số khác, ta hãy xem lại các bước mà hệ điều hành cấp phát một vùng nhớ mới:
+
+- B1: Tìm một vùng nhớ đủ rộng rãi cho mảng mới
+- B2: Copy toàn bộ dữ liệu từ vùng nhớ cũ sang vùng nhớ mới
+- B3: Giải phóng vùng nhớ cũ thành vùng nhớ hoang
+
+Vấn đề ở đây thực ra lại nằm ở B1 và B2. Lúc bạn đi xin vùng nhớ mới, vùng nhớ cũ vẫn còn chứa dữ liệu. Bạn không thể gộp vùng nhớ cũ vào một vùng nhớ hoang (mà bạn vừa tìm được ở B1) được, vì bạn phải chuyển dữ liệu từ đó sang mà.
+
+Nghĩa là, vùng nhớ "hoang" mà bạn dùng để xây mảng mới CHỈ BAO GỒM những mảng đã bị phá bỏ từ các lần mở rộng trước đó nữa.
+
+Bây giờ, gọi $k$ là hệ số nhân mở rộng. Giả sử ta đang ở lần mở rộng thứ $n$
+
+- Kích thước của vùng nhớ hiện tại ta đang đứng: $k^{n-1}$
+- Kích thước mảng mới cần xin: $k^n$
+- Tổng diện tích của các vùng nhớ hoang trước đó: $1+k+k^2+\cdots+k^{n-2}$
+
+Để bộ cấp phát bộ nhớ có thể tái sử dụng các vùng nhớ hoang kia, thì tổng diện tích vùng nhớ cũ phải **lớn hơn hoặc bằng** chỉ số mảng mới cần xin. Ta có bất phương trình sau:
+
+$$
+1+k+k^2+\cdots+k^{n-2}\geq k^n
+$$
+Theo công thức tổng cấp số nhân, vế trái là:
+$$
+1+k+k^2+\cdots+k^{n-2} = \frac{k^{n-1}-1}{k-1}
+$$
+Khi $n$ đủ lớn thì $-1$ trở lên không đáng kể, từ đó ta có thể rút gọn thành:
+$$
+k^{n-1} \geq k^n(k-1)
+$$
+Chia hai vế cho $k^{n-1}$, ta có
+$$
+1 \geq k(k-1)
+$$
+$$
+k^2 - k - 1 \leq 0
+$$
+Giải bất phương trình bậc 2, ta có:
+$$
+k\in [\frac{1-\sqrt{5}}{2},\frac{1+\sqrt{5}}{2}]
+$$
+Và vì $k \gt 0$:
+$$k=1.61803398875...$$
+Bạn có nhận ra không? Đây là **Tỉ lệ vàng** (golden ratio) $\phi$ đó!
+
+Điều này có nghĩa là, nếu bạn chọn một hệ số mở rộng $k\gt\phi$ (Vd: $k=2$) thì phương trình sẽ vô nghiệm và bộ cấp phát sẽ không thể tái sử dụng được vùng nhớ cũ nữa. Ngược lại nếu bạn chọn một hệ số mở rộng $k\leq\phi$ thì phương trình luôn đúng khi mảng đủ lớn. Các vùng nhớ cũ sẽ được gom lại và luôn luôn lớn hơn mảng mới. Máy tính sẽ tái chế RAM rất hiệu quả
