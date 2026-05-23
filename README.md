@@ -4,7 +4,7 @@ The backend service for Shiki's personal blog. It serves blog posts authored as 
 
 ## Overview
 
-- **Content source:** MDX files in `./posts`, each with YAML frontmatter (`title`, `subtitle`, `topic`).
+- **Content source:** MDX files in `./posts`, each with YAML frontmatter (`title`, `topic`, `cover`). `subtitle` is still accepted but deprecated and will be removed in a future release.
 - **Persistence:** SQLite at `./data/blog.db`. Only engagement metadata (UUID, slug, views, likes, timestamps) lives in the DB — post bodies are read from disk on request.
 - **Hot reload:** an fsnotify watcher monitors `./posts` and automatically syncs new MDX files into the database.
 
@@ -63,12 +63,14 @@ Drop an `.mdx` file into `./posts`. The filename (without extension) becomes the
 ```mdx
 ---
 title: Hello World
-subtitle: A short intro
 topic: General
+cover: /hello-world/cover.png
 ---
 
 Your post body in MDX goes here.
 ```
+
+> `subtitle` is deprecated. Existing posts using it will continue to work, but new posts should omit it.
 
 The watcher inserts a new row in `post_stats` on file create/write. Existing rows are preserved (slug is unique, conflicts are ignored), so view/like counters survive edits.
 
@@ -90,8 +92,9 @@ Base path: `/api/v1`
   "id": "…uuid…",
   "slug": "hello-world",
   "title": "Hello World",
-  "subtitle": "A short intro",
   "topic": "General",
+  "cover": "/hello-world/cover.png",
+  "subtitle": "",
   "views": 0,
   "likes": 0,
   "content": "…mdx body (single-post endpoint only)…",
