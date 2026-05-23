@@ -40,6 +40,7 @@ func createTable(db *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS post_stats (
 		uuid TEXT PRIMARY KEY,
 		slug TEXT UNIQUE NOT NULL,
+		cover TEXT,
 		views INTEGER DEFAULT 0,
 		likes INTEGER DEFAULT 0,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

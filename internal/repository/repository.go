@@ -46,6 +46,7 @@ func (r *repository) Get(slug string) (*model.PostStats, error) {
 	stats.Title = mdx.Title
 	stats.Subtitle = mdx.Subtitle
 	stats.Topic = mdx.Topic
+	stats.Cover = mdx.Cover
 	stats.Content = mdx.Content
 
 	return &stats, nil
@@ -77,6 +78,7 @@ func (r *repository) GetAll() ([]model.PostStats, error) {
 		item.Title = meta.Title
 		item.Subtitle = meta.Subtitle
 		item.Topic = meta.Topic
+		item.Cover = meta.Cover
 
 		stats = append(stats, item)
 	}
@@ -95,10 +97,10 @@ func (r *repository) IncreaseView(slug string) (*model.PostStats, error) {
 		UPDATE post_stats
 		SET views = views + 1
 		WHERE slug = ?
-		RETURNING uuid, slug, views, likes, created_at, updated_at
+		RETURNING uuid, slug, cover, views, likes, created_at, updated_at
 	`
 
-	err := r.db.QueryRow(query, slug).Scan(&post.UUID, &post.Slug, &post.Views, &post.Likes, &post.CreatedAt, &post.UpdatedAt)
+	err := r.db.QueryRow(query, slug).Scan(&post.UUID, &post.Slug, &post.Cover, &post.Views, &post.Likes, &post.CreatedAt, &post.UpdatedAt)
 	if err != nil {
 		return nil, fmt.Errorf("cannot update likes to DB: %w", err)
 	}
@@ -113,10 +115,10 @@ func (r *repository) IncreaseLike(slug string) (*model.PostStats, error) {
 		UPDATE post_stats
 		SET likes = likes + 1
 		WHERE slug = ?
-		RETURNING uuid, slug, views, likes, created_at, updated_at
+		RETURNING uuid, slug, cover, views, likes, created_at, updated_at
 	`
 
-	err := r.db.QueryRow(query, slug).Scan(&post.UUID, &post.Slug, &post.Views, &post.Likes, &post.CreatedAt, &post.UpdatedAt)
+	err := r.db.QueryRow(query, slug).Scan(&post.UUID, &post.Slug, &post.Cover, &post.Views, &post.Likes, &post.CreatedAt, &post.UpdatedAt)
 	if err != nil {
 		return nil, fmt.Errorf("cannot update likes to DB: %w", err)
 	}
