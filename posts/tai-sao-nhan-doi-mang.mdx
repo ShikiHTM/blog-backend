@@ -1,8 +1,11 @@
 ---
 title: Tại sao người ta lại nhân đôi phần tử mảng thay vì một số khác
-topic: Maths, Computer Architecture
+topic: Computer Architecture
 cover: /tai-sao-nhan-doi-mang/cover.png
+author: Shiki
 ---
+
+## Tại sao không chỉ cộng thêm một hằng số
 
 Hãy tưởng tượng bạn có một mảng với 10 phần tử:
 
@@ -21,6 +24,8 @@ Như vậy `capacity` của mảng mới đã bằng 20, đủ điều kiện đ
 
 Về vấn đề này, chúng ta cần đào sâu hơn. Hãy giả sử bạn có một mảng với 10 phần tử như trên, thay vì thêm 10 phần tử mới thì bạn thêm 100 phần tử. Nếu vẫn cộng thêm 10 cho một lần mở rộng, chúng ta cần tới 10 lần mở rộng mới đủ chỗ để nhét thêm 100 phần tử nữa.
 
+## Nhân đôi thì sao?
+
 Vậy nếu chúng ta nhân đôi nó lên thì sao?
 
 $$
@@ -33,6 +38,8 @@ $$
 $$
 
 Như vậy để có thể nhét thêm 100 phần tử nữa, chúng ta chỉ cần mở rộng thêm khoảng $\log_{2}{100}$ lần mở rộng khoảng xấp xỉ 4 lần. Rất nhanh đúng không? 
+
+## Vấn đề của nhân đôi
 
 Nhưng nếu mình nói với bạn rằng việc nhân đôi chỉ số mảng thật ra là một ý tưởng tồi thì sao?
 
@@ -56,6 +63,8 @@ Chính vì lý do này, nhiều ngôn ngữ hiện đại hơn như `Java`, `Go`
 $$
 k =1.5
 $$
+
+## Hệ số mở rộng lý tưởng
 
 Để hiểu rõ hơn tại sao người ta lại chọn con số này thay vì con số khác, ta hãy xem lại các bước mà hệ điều hành cấp phát một vùng nhớ mới:
 

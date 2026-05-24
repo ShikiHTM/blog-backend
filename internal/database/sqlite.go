@@ -41,6 +41,7 @@ func createTable(db *sql.DB) error {
 		uuid TEXT PRIMARY KEY,
 		slug TEXT UNIQUE NOT NULL,
 		cover TEXT,
+		author TEXT,
 		views INTEGER DEFAULT 0,
 		likes INTEGER DEFAULT 0,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

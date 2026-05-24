@@ -7,11 +7,11 @@ func (r *repository) SyncPost(slug string) error {
 	}
 
 	query := `
-		INSERT INTO post_stats (uuid, slug, cover, views, likes, created_at, updated_at)
-		VALUES (lower(hex(randomblob(16))), ?, ?, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		INSERT INTO post_stats (uuid, slug, cover, author, views, likes, created_at, updated_at)
+		VALUES (lower(hex(randomblob(16))), ?, ?, ?, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		ON CONFLICT(slug) DO UPDATE SET cover = excluded.cover, updated_at = CURRENT_TIMESTAMP;
 	`
 
-	_, err = r.db.Exec(query, slug, meta.Cover)
+	_, err = r.db.Exec(query, slug, meta.Cover, meta.Author)
 	return err
 }

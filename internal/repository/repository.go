@@ -47,6 +47,7 @@ func (r *repository) Get(slug string) (*model.PostStats, error) {
 	stats.Subtitle = mdx.Subtitle
 	stats.Topic = mdx.Topic
 	stats.Cover = mdx.Cover
+	stats.Author = mdx.Author
 	stats.Content = mdx.Content
 
 	return &stats, nil
@@ -78,6 +79,7 @@ func (r *repository) GetAll() ([]model.PostStats, error) {
 		item.Title = meta.Title
 		item.Subtitle = meta.Subtitle
 		item.Topic = meta.Topic
+		item.Author = meta.Author
 		item.Cover = meta.Cover
 
 		stats = append(stats, item)
