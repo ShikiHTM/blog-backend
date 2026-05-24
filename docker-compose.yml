@@ -1,0 +1,12 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blog-backend
+    ports:
+      - "3050:3050"
+    volumes:
+      - ./data:/app/data
+      - ./posts:/app/posts
+    restart: unless-stopped
