@@ -2,12 +2,39 @@ package repository
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/shikihtm/blog-backend/internal/logger"
 )
+
+func SyncAll(repo BlogRepository) {
+	entries, err := os.ReadDir(postsDir)
+	if err != nil {
+		log.Printf(logger.Error("Failed to read posts directory: %v"), err)
+		return
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+
+		ext := filepath.Ext(entry.Name())
+		if ext != ".mdx" && ext != ".md" {
+			continue
+		}
+
+		slug := strings.TrimSuffix(entry.Name(), ext)
+		if err := repo.SyncPost(slug); err != nil {
+			log.Printf("[SYNC] [ERROR] Failed to sync post %s to DB: %v\n", slug, err)
+		} else {
+			log.Printf("[SYNC] [INFO] Successfully synced database for: %s\n", slug)
+		}
+	}
+}
 
 func Watch(repo BlogRepository) {
 	watcher, err := fsnotify.NewWatcher()

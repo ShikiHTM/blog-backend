@@ -23,6 +23,7 @@ func main() {
 	repo := repository.NewRepository(dbConn)
 	postHandler := handler.NewPostHanlder(repo)
 
+	repository.SyncAll(repo)
 	repository.Watch(repo)
 
 	router := gin.Default()
