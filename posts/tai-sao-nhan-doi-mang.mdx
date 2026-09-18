@@ -1,5 +1,5 @@
 ---
-title: Tại sao người ta lại nhân đôi phần tử mảng thay vì một số khác
+title: Tại sao người ta lại nhân đôi kích thước mảng
 topic: Computer Architecture
 cover: /tai-sao-nhan-doi-mang/cover.png
 author: Shiki
@@ -9,8 +9,8 @@ author: Shiki
 
 Hãy tưởng tượng bạn có một mảng với 10 phần tử:
 
-```go
-a [10]int
+```go showLineNumbers
+a := make([]int, 0, 10)
 ```
 
 Mảng `a` đã được nạp đầy dữ liệu và cần nạp thêm 10 phần tử nữa. Giả sử thay vì nhân đôi `capacity` của mảng lên gấp đôi, chúng ta cộng thêm 10 `capacity` thì sao?
