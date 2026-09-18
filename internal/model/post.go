@@ -16,3 +16,12 @@ type PostStats struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type PostCreateRequest struct {
+	Slug    string `json:"slug"`
+	Title   string `json:"title,omitempty" yaml:"title"`
+	Topic   string `json:"topic,omitempty" yaml:"topic"`
+	Author  string `json:"author,omitempty" yaml:"author"`
+	Cover   string `json:"cover,omitempty" yaml:"cover"`
+	Content string `json:"content,omitempty"`
+}

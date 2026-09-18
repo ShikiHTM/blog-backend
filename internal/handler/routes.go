@@ -9,6 +9,7 @@ func RegisterRoutes(r *gin.Engine, postHandler *PostHandler) {
 	{
 		api.GET("/posts", postHandler.GetAll)
 		api.GET("/posts/:slug", postHandler.Get)
+		api.POST("/posts", postHandler.CreatePost)
 		api.POST("/posts/:slug/view", postHandler.IncreaseView)
 		api.POST("/posts/:slug/like", postHandler.IncreaseLike)
 	}
