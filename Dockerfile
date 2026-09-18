@@ -19,6 +19,7 @@ RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
 
 COPY --from=builder /out/blog-backend /app/blog-backend
+COPY --from=builder /src/posts /app/posts
 
 EXPOSE 3050
 
