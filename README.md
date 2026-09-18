@@ -82,6 +82,7 @@ Base path: `/api/v1`
 | ------ | ------------------------- | -------------------------------------------- |
 | GET    | `/posts`                  | List all posts with metadata and stats (no content). |
 | GET    | `/posts/:slug`            | Fetch one post including the MDX body.       |
+| POST   | `/posts`                  | Create a new post                            |
 | POST   | `/posts/:slug/view`       | Increment the view counter. Returns 204.     |
 | POST   | `/posts/:slug/like`       | Increment the like counter. Returns 204.     |
 
