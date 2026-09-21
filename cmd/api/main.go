@@ -14,7 +14,7 @@ import (
 func main() {
 	log.Println("[MAIN] [INFO] Starting Shiki Blog Backend service...")
 
-	dbConn, err := database.Initialize("./data/blog.db")
+	dbConn, err := database.Initialize("/app/data/blog.db")
 	if err != nil {
 		log.Fatalf("[MAIN] [FATAL] Database initialization failed: %v", err)
 	}
