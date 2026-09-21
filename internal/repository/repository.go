@@ -28,7 +28,7 @@ func NewRepository(dbConn *sql.DB) BlogRepository {
 func (r *repository) Get(slug string) (*model.PostStats, error) {
 	var stats model.PostStats
 
-	query := "SELECT uuid, slug, views, likes, created_at, updated_at FROM post_stats WHERE slug = ?"
+	query := "SELECT uuid, slug, views, likes, created_at, updated_at FROM post_stats WHERE slug = ? ORDER BY created_at DESC"
 
 	err := r.db.QueryRow(query, slug).Scan(&stats.UUID, &stats.Slug, &stats.Views, &stats.Likes, &stats.CreatedAt, &stats.UpdatedAt)
 	if err != nil {
