@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -14,7 +15,7 @@ type Config struct {
 
 func LoadConfig() (Config, error) {
 	if err := godotenv.Load(); err != nil {
-		return Config{}, errors.New("Error loading .env file")
+		log.Println("Error loading .env file")
 	}
 
 	path, exist := os.LookupEnv("USER_CREDENTIALS_FILE_PATH")
