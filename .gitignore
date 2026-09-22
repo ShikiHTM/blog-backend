@@ -15,6 +15,7 @@
 *.db-journal
 # Test binary, built with `go test -c`
 *.test
+*.json
 
 # Code coverage profiles and other test artifacts
 *.out
