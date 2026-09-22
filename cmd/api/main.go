@@ -7,7 +7,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/shikihtm/blog-backend/internal/database"
-	"github.com/shikihtm/blog-backend/internal/handler"
+	"github.com/shikihtm/blog-backend/internal/handler/auth"
+	handler "github.com/shikihtm/blog-backend/internal/handler/post"
 	"github.com/shikihtm/blog-backend/internal/repository"
 )
 
@@ -20,8 +21,14 @@ func main() {
 	}
 	defer dbConn.Close()
 
+	authConfig, err := auth.LoadConfig()
+	if err != nil {
+		log.Fatalf("[MAIN] [FATAL] Config load failed: %v", err)
+	}
+
 	repo := repository.NewRepository(dbConn)
-	postHandler := handler.NewPostHanlder(repo)
+	postHandler := handler.NewPostHanlder(repo, authConfig.JWTSecretKey)
+	authHandler := auth.NewAuthenticationHandler(authConfig)
 
 	repository.SyncAll(repo)
 	repository.Watch(repo)
@@ -36,7 +43,10 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	handler.RegisterRoutes(router, postHandler)
+	r := router.Group("/api/v1")
+
+	postHandler.RegisterRoutes(r)
+	authHandler.RegisterRoutes(r)
 
 	log.Println("[MAIN] [INFO] HTTP Server is ready on port :3000")
 	if err := router.Run(":3050"); err != nil {

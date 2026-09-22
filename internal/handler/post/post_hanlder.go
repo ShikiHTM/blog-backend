@@ -9,15 +9,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shikihtm/blog-backend/internal/model"
 	"github.com/shikihtm/blog-backend/internal/repository"
+	"github.com/shikihtm/blog-backend/middleware"
 )
 
 type PostHandler struct {
-	repo repository.BlogRepository
+	repo      repository.BlogRepository
+	jwtSecret string
 }
 
-func NewPostHanlder(r repository.BlogRepository) *PostHandler {
+func NewPostHanlder(r repository.BlogRepository, jwtSecret string) *PostHandler {
 	return &PostHandler{
-		repo: r,
+		repo:      r,
+		jwtSecret: jwtSecret,
 	}
 }
 
@@ -124,4 +127,13 @@ func (h *PostHandler) IncreaseView(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusNoContent, nil)
+}
+
+func (h *PostHandler) RegisterRoutes(r *gin.RouterGroup) {
+	posts := r.Group("/posts")
+	{
+		posts.GET("/", h.GetAll)
+		posts.GET("/:slug", h.Get)
+		posts.POST("/", h.CreatePost).Use(middleware.RequireAuthCookie(h.jwtSecret))
+	}
 }
